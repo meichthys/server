@@ -78,7 +78,6 @@ class MySQL extends AbstractDatabase {
 		try {
 			$name = $this->dbName;
 			$user = $this->dbUser;
-			//we can't use OC_DB functions here because we need to connect as the administrative user.
 			$characterSet = $this->config->getValue('mysql.utf8mb4', false) ? 'utf8mb4' : 'utf8';
 			$query = "CREATE DATABASE IF NOT EXISTS `$name` CHARACTER SET $characterSet COLLATE {$characterSet}_bin;";
 			$connection->executeUpdate($query);
