@@ -352,7 +352,7 @@ class Share extends Constants {
 	 * Refactoring notes:
 	 *   * defacto $limit, $itemsShareWithBySource, $checkExpireDate, $parameters and $format is always the default and therefore is removed in the subsequent call
 	 */
-	public static function getItems($itemType, ?string $item = null, $shareType = null, $shareWith = null,
+	public static function getItems($itemType, ?string $item = null, ?int $shareType = null, $shareWith = null,
 									$uidOwner = null, $format = self::FORMAT_NONE, $parameters = null, $limit = -1,
 									$includeCollections = false, $itemShareWithBySource = false, $checkExpireDate = true) {
 		if (\OC::$server->getConfig()->getAppValue('core', 'shareapi_enabled', 'yes') != 'yes') {
@@ -401,7 +401,7 @@ class Share extends Constants {
 		}
 		if (isset($shareType)) {
 			// Include all user and group items
-			if ($shareType == self::$shareTypeUserAndGroups && isset($shareWith)) {
+			if ($shareType === self::$shareTypeUserAndGroups && isset($shareWith)) {
 				$qb->andWhere($qb->expr()->andX(
 					$qb->expr()->in('share_type', $qb->createNamedParameter([IShare::TYPE_USER, self::$shareTypeGroupUserUnique], IQueryBuilder::PARAM_INT_ARRAY)),
 					$qb->expr()->eq('share_with', $qb->createNamedParameter($shareWith))
@@ -432,7 +432,7 @@ class Share extends Constants {
 			$qb->andWhere($qb->expr()->neq('uid_owner', $qb->createNamedParameter($uidOwner)));
 			if (!isset($shareType)) {
 				// Prevent unique user targets for group shares from being selected
-				$qb->andWhere($qb->expr()->eq('share_type', $qb->createNamedParameter(self::$shareTypeGroupUserUnique, IQueryBuilder::PARAM_INT)));
+				$qb->andWhere($qb->expr()->neq('share_type', $qb->createNamedParameter(self::$shareTypeGroupUserUnique, IQueryBuilder::PARAM_INT)));
 			}
 			if ($fileDependent) {
 				$column = 'file_source';
@@ -480,12 +480,13 @@ class Share extends Constants {
 		try {
 			$result = $qb->executeQuery();
 		} catch (\Exception $e) {
-			\OC::$server->get(LoggerInterface::class)->error(
+			\OCP\Server::get(LoggerInterface::class)->error(
 				'Error while selecting shares: ' . $qb->getSQL(),
 				[
 					'app' => 'files_sharing',
 					'exception' => $e
 				]);
+			throw new \RuntimeException('Wrong SQL qury', $e);
 		}
 
 		$root = strlen($root);
@@ -494,6 +495,7 @@ class Share extends Constants {
 		$switchedItems = [];
 		$mounts = [];
 		while ($row = $result->fetch()) {
+			//var_dump($row);
 			self::transformDBResults($row);
 			// Filter out duplicate group shares for users with unique targets
 			if ($fileDependent && !self::isFileReachable($row['path'], $row['storage_id'])) {
@@ -760,23 +762,9 @@ class Share extends Constants {
 	}
 
 	/**
-<<<<<<< HEAD
-	 * construct select statement
-	 * @param int $format
-	 * @param boolean $fileDependent ist it a file/folder share or a general share
-	 * @param string $uidOwner
-	 * @return string select statement
-||||||| parent of afa85edba0 (Cleanup tags and Share component)
-	 * construct select statement
-	 * @param int $format
-	 * @param boolean $fileDependent ist it a file/folder share or a generla share
-	 * @param string $uidOwner
-	 * @return string select statement
-=======
 	 * Construct select statement
 	 *
 	 * @param bool $fileDependent ist it a file/folder share or a general share
->>>>>>> afa85edba0 (Cleanup tags and Share component)
 	 */
 	private static function getSelectStatement(int $format, bool $fileDependent, ?string $uidOwner = null): IQueryBuilder {
 		/** @var IDBConnection $connection */
