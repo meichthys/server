@@ -315,19 +315,16 @@ class Application extends App {
 		$eventDispatcher->addServiceListener(UserDeletedEvent::class, UserDeletedFilesCleanupListener::class);
 		$eventDispatcher->addServiceListener(UserDeletedEvent::class, UserDeletedWebAuthnCleanupListener::class);
 
-		/** @var IEventDispatcher $eventDispatcher */
-		$newEventDispatcher = \OC::$server->get(IEventDispatcher::class);
-
 		// Metadata
 		/** @var IConfig $config */
 		$config = $container->get(IConfig::class);
 		if ($config->getSystemValueBool('enable_file_metadata', true)) {
-			$newEventDispatcher->addServiceListener(NodeDeletedEvent::class, FileEventListener::class);
-			$newEventDispatcher->addServiceListener(NodeRemovedFromCache::class, FileEventListener::class);
-			$newEventDispatcher->addServiceListener(NodeWrittenEvent::class, FileEventListener::class);
+			$eventDispatcher->addServiceListener(NodeDeletedEvent::class, FileEventListener::class);
+			$eventDispatcher->addServiceListener(NodeRemovedFromCache::class, FileEventListener::class);
+			$eventDispatcher->addServiceListener(NodeWrittenEvent::class, FileEventListener::class);
 		}
 
 		// Tags
-		$newEventDispatcher->addServiceListener(UserDeletedEvent::class, TagManager::class);
+		$eventDispatcher->addServiceListener(UserDeletedEvent::class, TagManager::class);
 	}
 }
