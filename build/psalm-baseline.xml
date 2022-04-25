@@ -1112,12 +1112,6 @@
       <code>getUniqueStorages</code>
     </UndefinedMethod>
   </file>
-  <file src="apps/files_external/lib/Lib/Auth/Password/LoginCredentials.php">
-    <InvalidArgument occurrences="2">
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-    </InvalidArgument>
-  </file>
   <file src="apps/files_external/lib/Lib/Backend/Backend.php">
     <InvalidReturnType occurrences="1">
       <code>self</code>
@@ -1293,16 +1287,6 @@
     <UndefinedVariable occurrences="1">
       <code>$_</code>
     </UndefinedVariable>
-  </file>
-  <file src="apps/files_sharing/lib/AppInfo/Application.php">
-    <InvalidArgument occurrences="6">
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-    </InvalidArgument>
   </file>
   <file src="apps/files_sharing/lib/Cache.php">
     <FalsableReturnStatement occurrences="1">
@@ -1924,17 +1908,7 @@
     </UndefinedInterfaceMethod>
   </file>
   <file src="core/Application.php">
-    <InvalidArgument occurrences="9">
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
-    </InvalidArgument>
+    <InvalidArgument occurrences="8"/>
   </file>
   <file src="core/BackgroundJobs/BackgroundCleanupUpdaterBackupsJob.php">
     <ParamNameMismatch occurrences="1">
@@ -2141,10 +2115,8 @@
       <code>getAppsNeedingUpgrade</code>
       <code>getIncompatibleApps</code>
     </InternalMethod>
-    <InvalidArgument occurrences="3">
+    <InvalidArgument occurrences="1">
       <code>$restrictions</code>
-      <code>addServiceListener</code>
-      <code>addServiceListener</code>
     </InvalidArgument>
     <RedundantCondition occurrences="1">
       <code>((array)$request-&gt;getParam('appid')) !== ''</code>
