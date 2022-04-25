@@ -79,7 +79,7 @@ class Application extends App {
 
 		$server = $container->getServer();
 		/** @var IEventDispatcher $eventDispatcher */
-		$eventDispatcher = $server->query(IEventDispatcher::class);
+		$eventDispatcher = $server->get(IEventDispatcher::class);
 
 		$notificationManager = $server->getNotificationManager();
 		$notificationManager->registerNotifierService(CoreNotifier::class);
