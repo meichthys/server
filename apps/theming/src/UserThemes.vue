@@ -1,4 +1,5 @@
 <template>
+<section>
 	<NcSettingsSection class="theming" :title="t('themes', 'Appearance and accessibility')">
 		<p v-html="description" />
 		<p v-html="descriptionDetail" />
@@ -24,6 +25,12 @@
 				@change="changeFont" />
 		</div>
 	</NcSettingsSection>
+	<NcSettingsSection>
+		<BackgroundSettings :background="background"
+			:theming-default-background="themingDefaultBackground"
+			@update:background="updateBackground" />
+	</NcSettingsSection>
+</section>
 </template>
 
 <script>
@@ -31,11 +38,14 @@ import { generateOcsUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'
 import NcSettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection'
+import BackgroundSettings from './BackgroundSettings'
 
 import ItemPreview from './components/ItemPreview'
-
 const availableThemes = loadState('theming', 'themes', [])
 const enforceTheme = loadState('theming', 'enforceTheme', '')
+const shippedBackgroundList = loadState('theming', 'shippedBackgrounds')
+const themingDefaultBackground = loadState('theming', 'themingDefaultBackground')
+const background = loadState('theming', 'background')
 
 console.debug('Available themes', availableThemes)
 
@@ -44,12 +54,15 @@ export default {
 	components: {
 		ItemPreview,
 		NcSettingsSection,
+		BackgroundSettings,
 	},
 
 	data() {
 		return {
 			availableThemes,
 			enforceTheme,
+			background,
+			themingDefaultBackground,
 		}
 	},
 
@@ -95,6 +108,22 @@ export default {
 		},
 	},
 	methods: {
+		updateBackground(data) {
+			this.background = data.type === 'custom' || data.type === 'default' ? data.type : data.value
+			this.version = data.version
+			this.updateGlobalStyles()
+		},
+		updateGlobalStyles() {
+			// Override primary-invert-if-bright and color-primary-text if background is set
+			const isBackgroundBright = shippedBackgroundList[this.background]?.theming === 'dark'
+			if (isBackgroundBright) {
+				document.querySelector('#header').style.setProperty('--primary-invert-if-bright', 'invert(100%)')
+				document.querySelector('#header').style.setProperty('--color-primary-text', '#000000')
+			} else {
+				document.querySelector('#header').style.removeProperty('--primary-invert-if-bright')
+				document.querySelector('#header').style.removeProperty('--color-primary-text')
+			}
+		},
 		changeTheme({ enabled, id }) {
 			// Reset selected and select new one
 			this.themes.forEach(theme => {
@@ -200,5 +229,4 @@ export default {
 		flex-direction: column;
 	}
 }
-
 </style>

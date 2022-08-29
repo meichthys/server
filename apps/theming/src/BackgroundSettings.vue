@@ -1,7 +1,9 @@
 <!--
   - @copyright Copyright (c) 2020 Julius Härtl <jus@bitgrid.net>
+  - @copyright Copyright (c) 2022 Greta Doci <gretadoci@gmail.com>
   -
   - @author Julius Härtl <jus@bitgrid.net>
+  - @author Greta Doci
   -
   - @license GNU AGPL version 3 or any later version
   -
@@ -26,19 +28,19 @@
 			:class="{ active: background === 'custom' }"
 			tabindex="0"
 			@click="pickFile">
-			{{ t('dashboard', 'Pick from Files') }}
+			{{ t('theming', 'Pick from Files') }}
 		</button>
 		<button class="background default"
 			tabindex="0"
 			:class="{ 'icon-loading': loading === 'default', active: background === 'default' }"
 			@click="setDefault">
-			{{ t('dashboard', 'Default image') }}
+			{{ t('theming', 'Default images') }}
 		</button>
 		<button class="background color"
 			:class="{ active: background === 'custom' }"
 			tabindex="0"
 			@click="pickColor">
-			{{ t('dashboard', 'Plain background') }}
+			{{ t('theming', 'Plain background') }}
 		</button>
 		<button v-for="shippedBackground in shippedBackgrounds"
 			:key="shippedBackground.name"
@@ -55,9 +57,9 @@
 import axios from '@nextcloud/axios'
 import { generateUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
-import getBackgroundUrl from './../helpers/getBackgroundUrl'
-import prefixWithBaseUrl from './../helpers/prefixWithBaseUrl'
-const shippedBackgroundList = loadState('dashboard', 'shippedBackgrounds')
+import getBackgroundUrl from '../src/helpers/getBackgroundUrl'
+import prefixWithBaseUrl from '../src/helpers/prefixWithBaseUrl'
+const shippedBackgroundList = loadState('theming', 'shippedBackgrounds')
 
 export default {
 	name: 'BackgroundSettings',
@@ -73,7 +75,7 @@ export default {
 	},
 	data() {
 		return {
-			backgroundImage: generateUrl('/apps/dashboard/background') + '?v=' + Date.now(),
+			backgroundImage: generateUrl('/apps/theming/background') + '?v=' + Date.now(),
 			loading: false,
 		}
 	},
@@ -107,27 +109,27 @@ export default {
 		},
 		async setDefault() {
 			this.loading = 'default'
-			const result = await axios.post(generateUrl('/apps/dashboard/background/default'))
+			const result = await axios.post(generateUrl('/apps/theming/background/default'))
 			this.update(result.data)
 		},
 		async setShipped(shipped) {
 			this.loading = shipped
-			const result = await axios.post(generateUrl('/apps/dashboard/background/shipped'), { value: shipped })
+			const result = await axios.post(generateUrl('/apps/theming/background/shipped'), { value: shipped })
 			this.update(result.data)
 		},
 		async setFile(path) {
 			this.loading = 'custom'
-			const result = await axios.post(generateUrl('/apps/dashboard/background/custom'), { value: path })
+			const result = await axios.post(generateUrl('/apps/theming/background/custom'), { value: path })
 			this.update(result.data)
 		},
 		async pickColor() {
 			this.loading = 'color'
 			const color = OCA && OCA.Theming ? OCA.Theming.color : '#0082c9'
-			const result = await axios.post(generateUrl('/apps/dashboard/background/color'), { value: color })
+			const result = await axios.post(generateUrl('/apps/theming/background/color'), { value: color })
 			this.update(result.data)
 		},
 		pickFile() {
-			window.OC.dialogs.filepicker(t('dashboard', 'Insert from {productName}', { productName: OC.theme.name }), (path, type) => {
+			window.OC.dialogs.filepicker(t('theming', 'Insert from {productName}', { productName: OC.theme.name }), (path, type) => {
 				if (type === OC.dialogs.FILEPICKER_TYPE_CHOOSE) {
 					this.setFile(path)
 				}

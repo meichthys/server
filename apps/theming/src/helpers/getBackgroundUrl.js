@@ -42,7 +42,7 @@ export default (background, time = 0, themingDefaultBackground = '') => {
 
 		return prefixWithBaseUrl('kamil-porembinski-clouds.jpg')
 	} else if (background === 'custom') {
-		return generateUrl('/apps/dashboard/background') + '?v=' + time
+		return generateUrl('/apps/theming/background') + '?v=' + time
 	}
 
 	return prefixWithBaseUrl(background)

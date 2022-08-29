@@ -90,5 +90,10 @@ return [
 			'url' => '/api/v1/theme/{themeId}',
 			'verb' => 'DELETE',
 		],
+		[
+			'name' => 'theming#getBackground',
+			'url' => '/background',
+			'verb' => 'GET',
+		],
 	]
 ];
