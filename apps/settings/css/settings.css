@@ -793,10 +793,6 @@ span.version {
     display: none !important;
   }
 }
-#version.section {
-  border-bottom: none;
-}
-
 .section {
   margin-bottom: 0;
   /* section divider lines, none needed for last one */
@@ -817,7 +813,6 @@ span.version {
 .followupsection {
   display: block;
   padding: 0 30px 30px 30px;
-  color: #555;
 }
 
 .app-image {
