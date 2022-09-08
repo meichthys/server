@@ -55,11 +55,16 @@ use OCP\Files\Storage\IStorage;
 use OCP\IUserManager;
 use OCP\Lock\ILockingProvider;
 use OCP\Share\IShare;
+use Psr\Log\LoggerInterface;
 
 /**
  * Convert target path to source path and pass the function call to the correct storage provider
  */
 class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedStorage, IDisableEncryptionStorage {
+	/**
+	 * @var \OC\Files\Storage\Storage|null $storage
+	 */
+	protected $storage;
 
 	/** @var \OCP\Share\IShare */
 	private $superShare;
@@ -532,6 +537,16 @@ class SharedStorage extends \OC\Files\Storage\Wrapper\Jail implements ISharedSto
 
 	public function getWrapperStorage() {
 		$this->init();
+
+		// `init` should handle this, but apparently it sometimes doesn't
+		if (!$this->storage instanceof IStorage) {
+			$e = new \Exception('Share source storage is null after initializing for share: ' . $this->getShare()->getId());
+			$this->storage = new FailedStorage(['exception' => $e]);
+			$this->cache = new FailedCache();
+			$this->rootPath = '';
+			$this->logger->logException($e);
+		}
+
 		return $this->storage;
 	}
 
