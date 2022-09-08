@@ -78,6 +78,16 @@ return [
 			'verb' => 'GET',
 			'requirements' => ['image' => '.+']
 		],
+		[
+			'name' => 'userTheme#getBackground',
+			'url' => '/background',
+			'verb' => 'GET',
+		],
+		[
+			'name' => 'userTheme#setBackground',
+			'url' => '/background/{type}',
+			'verb' => 'POST',
+		],
 	],
 	'ocs' => [
 		[
@@ -89,11 +99,6 @@ return [
 			'name' => 'userTheme#disableTheme',
 			'url' => '/api/v1/theme/{themeId}',
 			'verb' => 'DELETE',
-		],
-		[
-			'name' => 'theming#getBackground',
-			'url' => '/background',
-			'verb' => 'GET',
 		],
 	]
 ];

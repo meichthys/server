@@ -3,7 +3,8 @@
   - @copyright Copyright (c) 2022 Greta Doci <gretadoci@gmail.com>
   -
   - @author Julius Härtl <jus@bitgrid.net>
-  - @author Greta Doci
+  - @author Greta Doci <gretadoci@gmail.com>
+  - @author Christopher Ng <chrng8@gmail.com>
   -
   - @license GNU AGPL version 3 or any later version
   -
@@ -34,7 +35,7 @@
 			tabindex="0"
 			:class="{ 'icon-loading': loading === 'default', active: background === 'default' }"
 			@click="setDefault">
-			{{ t('theming', 'Default images') }}
+			{{ t('theming', 'Default image') }}
 		</button>
 		<button class="background color"
 			:class="{ active: background === 'custom' }"
@@ -55,14 +56,19 @@
 
 <script>
 import axios from '@nextcloud/axios'
+import Tooltip from '@nextcloud/vue/dist/Directives/Tooltip'
 import { generateUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
-import getBackgroundUrl from '../src/helpers/getBackgroundUrl'
-import prefixWithBaseUrl from '../src/helpers/prefixWithBaseUrl'
+import { getBackgroundUrl } from '../helpers/getBackgroundUrl.js'
+import { prefixWithBaseUrl } from '../helpers/prefixWithBaseUrl.js'
+
 const shippedBackgroundList = loadState('theming', 'shippedBackgrounds')
 
 export default {
 	name: 'BackgroundSettings',
+	directives: {
+		Tooltip,
+	},
 	props: {
 		background: {
 			type: String,
@@ -81,12 +87,12 @@ export default {
 	},
 	computed: {
 		shippedBackgrounds() {
-			return Object.keys(shippedBackgroundList).map((item) => {
+			return Object.keys(shippedBackgroundList).map(fileName => {
 				return {
-					name: item,
-					url: prefixWithBaseUrl(item),
-					preview: prefixWithBaseUrl('previews/' + item),
-					details: shippedBackgroundList[item],
+					name: fileName,
+					url: prefixWithBaseUrl(fileName),
+					preview: prefixWithBaseUrl('preview/' + fileName),
+					details: shippedBackgroundList[fileName],
 				}
 			})
 		},

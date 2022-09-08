@@ -29,8 +29,6 @@ return [
 		['name' => 'dashboard#index', 'url' => '/', 'verb' => 'GET'],
 		['name' => 'dashboard#updateLayout', 'url' => '/layout', 'verb' => 'POST'],
 		['name' => 'dashboard#updateStatuses', 'url' => '/statuses', 'verb' => 'POST'],
-		['name' => 'theming#getBackground', 'url' => '/background', 'verb' => 'GET'],
-		['name' => 'theming#setBackground', 'url' => '/background/{type}', 'verb' => 'POST'],
 	],
 	'ocs' => [
 		['name' => 'dashboardApi#getWidgetItems', 'url' => '/api/v1/widget-items', 'verb' => 'GET'],
