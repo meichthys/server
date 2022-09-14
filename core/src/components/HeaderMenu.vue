@@ -47,6 +47,7 @@
 <script>
 import { directive as ClickOutside } from 'v-click-outside'
 import excludeClickOutsideClasses from '@nextcloud/vue/dist/Mixins/excludeClickOutsideClasses'
+import { loadState } from '@nextcloud/initial-state'
 
 export default {
 	name: 'HeaderMenu',
@@ -81,6 +82,7 @@ export default {
 				handler: this.closeMenu,
 				middleware: this.clickOutsideMiddleware,
 			},
+			shortcutsDisabled: loadState('theming', 'shortcutsDisabled', false),
 		}
 	},
 
@@ -144,6 +146,10 @@ export default {
 		},
 
 		onKeyDown(event) {
+			if (this.shortcutsDisabled) {
+				return
+			}
+
 			// If opened and escape pressed, close
 			if (event.key === 'Escape' && this.opened) {
 				event.preventDefault()

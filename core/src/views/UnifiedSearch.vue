@@ -164,6 +164,7 @@ import Magnify from 'vue-material-design-icons/Magnify'
 import HeaderMenu from '../components/HeaderMenu'
 import SearchResult from '../components/UnifiedSearch/SearchResult'
 import SearchResultPlaceholders from '../components/UnifiedSearch/SearchResultPlaceholders'
+import { loadState } from '@nextcloud/initial-state'
 
 const REQUEST_FAILED = 0
 const REQUEST_OK = 1
@@ -334,6 +335,12 @@ export default {
 	},
 
 	mounted() {
+		const shortcutsDisabled = loadState('theming', 'shortcutsDisabled', false)
+
+		if (shortcutsDisabled) {
+			return
+		}
+
 		document.addEventListener('keydown', (event) => {
 			// if not already opened, allows us to trigger default browser on second keydown
 			if (event.ctrlKey && event.key === 'f' && !this.open) {
