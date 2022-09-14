@@ -546,7 +546,9 @@ class Installer {
 						if (file_exists($app_dir['path']."/$filename/appinfo/info.xml")) {
 							if ($config->getAppValue($filename, "installed_version", null) === null) {
 								$info = OC_App::getAppInfo($filename);
-								$enabled = isset($info['default_enable']);
+								// default_enable is deprecated since 25
+								// enabled-by-default apps needs to be added to core/shipped.json
+								$enabled = isset($info['default_enable']) || $appManager->isDefaultEnabled($filename);
 								if (($enabled || in_array($filename, $appManager->getAlwaysEnabledApps()))
 									  && $config->getAppValue($filename, 'enabled') !== 'no') {
 									if ($softErrors) {

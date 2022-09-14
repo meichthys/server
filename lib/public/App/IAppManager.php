@@ -84,6 +84,16 @@ interface IAppManager {
 	public function isInstalled($appId);
 
 	/**
+	 * Check if an app is enabled by default
+	 *
+	 * Notice: This actually checks if the app should be enabled by default
+	 * and not if currently installed/enabled
+	 *
+	 * @since 25.0.0
+	 */
+	public function isDefaultEnabled(string $appId):bool;
+
+	/**
 	 * Enable an app for every user
 	 *
 	 * @param string $appId
@@ -177,6 +187,12 @@ interface IAppManager {
 	 * @since 9.0.0
 	 */
 	public function getAlwaysEnabledApps();
+
+	/**
+	 * @return string[]
+	 * @since 25.0.0
+	 */
+	public function getDefaultEnabledApps(): array;
 
 	/**
 	 * @param \OCP\IGroup $group

@@ -47,6 +47,28 @@
     "weather_status",
     "workflowengine"
   ],
+  "defaultEnabled": [
+    "comments",
+    "contactsinteraction",
+    "dashboard",
+    "dav",
+    "federation",
+    "files",
+    "files_sharing",
+    "files_trashbin",
+    "files_versions",
+    "lookup_server_connector",
+    "oauth2",
+    "provisioning_api",
+    "related_resources",
+    "settings",
+    "sharebymail",
+    "systemtags",
+    "theming",
+    "updatenotification",
+    "user_status",
+    "weather_status"
+  ],
   "alwaysEnabled": [
     "files",
     "cloud_federation_api",
