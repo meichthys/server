@@ -29,27 +29,36 @@ use OCA\Theming\AppInfo\Application;
 use OCA\Theming\Service\JSDataService;
 use OCA\Theming\Service\ThemeInjectionService;
 use OCA\Theming\Service\ThemesService;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+use OCP\AppFramework\Http\TemplateResponse;
 use OCP\EventDispatcher\Event;
 use OCP\EventDispatcher\IEventListener;
 use OCP\IConfig;
 use OCP\IInitialStateService;
 use OCP\IServerContainer;
 use OCP\IURLGenerator;
+use OCP\IUserSession;
 
 class BeforeTemplateRenderedListener implements IEventListener {
 
 	private IInitialStateService $initialStateService;
 	private IServerContainer $serverContainer;
 	private ThemeInjectionService $themeInjectionService;
+	private IUserSession $userSession;
+	private IConfig $config;
 
 	public function __construct(
 		IInitialStateService $initialStateService,
 		IServerContainer $serverContainer,
-		ThemeInjectionService $themeInjectionService
+		ThemeInjectionService $themeInjectionService,
+		IUserSession $userSession,
+		IConfig $config
 	) {
 		$this->initialStateService = $initialStateService;
 		$this->serverContainer = $serverContainer;
 		$this->themeInjectionService = $themeInjectionService;
+		$this->userSession = $userSession;
+		$this->config = $config;
 	}
 
 	public function handle(Event $event): void {
@@ -57,6 +66,17 @@ class BeforeTemplateRenderedListener implements IEventListener {
 		$this->initialStateService->provideLazyInitialState(Application::APP_ID, 'data', function () use ($serverContainer) {
 			return $serverContainer->query(JSDataService::class);
 		});
+
+		/** @var BeforeTemplateRenderedEvent $event */
+		if ($event->getResponse()->getRenderAs() === TemplateResponse::RENDER_AS_USER) {
+			$this->initialStateService->provideLazyInitialState(Application::APP_ID, 'shortcutsDisabled', function () {
+				if ($this->userSession->getUser()) {
+					$uid = $this->userSession->getUser()->getUID();
+					return $this->config->getUserValue($uid, Application::APP_ID, 'shortcuts_disabled', 'no') === 'yes';
+				}
+				return false;
+			});
+		}
 
 		$this->themeInjectionService->injectHeaders();
 

@@ -23,6 +23,14 @@
 				type="font"
 				@change="changeFont" />
 		</div>
+
+		<NcCheckboxRadioSwitch class="theming__preview-toggle"
+			:checked.sync="shortcutsDisabled"
+			name="shortcuts_disabled"
+			type="switch"
+			@change="changeShortcutsDisabled">
+			{{ t('theming', 'Disable all keyboard shortcuts to avoid interference with accessibility tools.') }}
+		</NcCheckboxRadioSwitch>
 	</NcSettingsSection>
 </template>
 
@@ -30,12 +38,14 @@
 import { generateOcsUrl } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'
+import NcCheckboxRadioSwitch from '@nextcloud/vue/dist/Components/NcCheckboxRadioSwitch'
 import NcSettingsSection from '@nextcloud/vue/dist/Components/NcSettingsSection'
 
 import ItemPreview from './components/ItemPreview'
 
 const availableThemes = loadState('theming', 'themes', [])
 const enforceTheme = loadState('theming', 'enforceTheme', '')
+const shortcutsDisabled = loadState('theming', 'shortcutsDisabled', false)
 
 console.debug('Available themes', availableThemes)
 
@@ -43,6 +53,7 @@ export default {
 	name: 'UserThemes',
 	components: {
 		ItemPreview,
+		NcCheckboxRadioSwitch,
 		NcSettingsSection,
 	},
 
@@ -50,6 +61,7 @@ export default {
 		return {
 			availableThemes,
 			enforceTheme,
+			shortcutsDisabled,
 		}
 	},
 
@@ -94,6 +106,13 @@ export default {
 			return '<a target="_blank" href="https://nextcloud.com/design" rel="noreferrer nofollow">'
 		},
 	},
+
+	watch: {
+		shortcutsDisabled(newState) {
+			this.changeShortcutsDisabled(newState)
+		},
+	},
+
 	methods: {
 		changeTheme({ enabled, id }) {
 			// Reset selected and select new one
@@ -120,6 +139,31 @@ export default {
 
 			this.updateBodyAttributes()
 			this.selectItem(enabled, id)
+		},
+
+		async changeShortcutsDisabled(newState) {
+			console.error('changeShortcutsDisabled', newState)
+
+			if (newState) {
+				await axios({
+					url: generateOcsUrl('apps/provisioning_api/api/v1/config/users/{appId}/{configKey}', {
+						appId: 'theming',
+						configKey: 'shortcuts_disabled',
+					}),
+					data: {
+						configValue: 'yes',
+					},
+					method: 'POST',
+				})
+			} else {
+				await axios({
+					url: generateOcsUrl('apps/provisioning_api/api/v1/config/users/{appId}/{configKey}', {
+						appId: 'theming',
+						configKey: 'shortcuts_disabled',
+					}),
+					method: 'DELETE',
+				})
+			}
 		},
 
 		updateBodyAttributes() {
